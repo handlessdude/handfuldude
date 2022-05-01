@@ -17,3 +17,5 @@ export function normalizedCoordsInPerc(keypoint: hdp.Keypoint,
         y: Math.min(Math.max(keypoint.y * 100 / camHeight, 0), 100),
     }
 }
+
+export const multiplyValue = (val: number, quotient: number) =>  val*quotient

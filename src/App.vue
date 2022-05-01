@@ -5,22 +5,30 @@ import Camera from "@/components/Camera.vue";
 import * as hdp from "@tensorflow-models/hand-pose-detection";
 import { attempt } from "@/utils/execControl";
 import {
-  extractHanded,
   extractKeypoint,
   normalizedCoordsInPerc,
+  multiplyValue,
 } from "@/utils/handsPostProcessing";
 
-import { onMounted, ref } from "vue";
-
-//const windowWidth = ref(window.innerWidth);
-//const windowHeight = ref(window.innerHeight);
+import { onMounted, onUnmounted, ref } from "vue";
+// stucked into the issue of max webcam resolution maybe? todo check out webcam proportions
+/*
+const QUOTIENT = 0.75;
+const _width = ref(multiplyValue(window.innerWidth, QUOTIENT));
+const _height = ref(multiplyValue(window.innerHeight, QUOTIENT));
+const onResize = () => {
+  _width.value = multiplyValue(window.innerWidth, QUOTIENT);
+  _height.value = multiplyValue(window.innerHeight, QUOTIENT);
+  console.log("new _width = ", _width.value, "new _height = ", _height.value);
+};
+*/
+const _width = ref(640);
+const _height = ref(480);
 
 const target = ref<HTMLDivElement>();
-//const leftTarget = ref<HTMLDivElement>();
-// const rightTarget = ref<HTMLDivElement>();
-
 const camRef = ref<{ video: HTMLVideoElement }>();
 let detector: hdp.HandDetector;
+
 function predictWebcam() {
   detector
     .estimateHands(camRef.value?.video as HTMLVideoElement)
@@ -30,45 +38,15 @@ function predictWebcam() {
         const indexFingerTip = extractKeypoint(hand, "index_finger_tip");
         const coords = normalizedCoordsInPerc(
           indexFingerTip,
-          window.innerWidth,
-          window.innerHeight
+          _width.value,
+          _height.value
         );
         console.log("normalizedCoords = ", coords);
         if (target) {
           (target.value as HTMLDivElement).style.left = coords.x + "%";
           (target.value as HTMLDivElement).style.top = coords.y + "%";
         }
-
-        // here we have a problem: hand's handedness may be misrecognized so left and right targets may swap...
-        // and we dont want that for decent user experience
-        /*
-        const leftHand = extractHanded(predictions, "Left");
-        const rightHand = extractHanded(predictions, "Right");
-        if (leftHand) {
-          //console.log("DBG: LEFT_HAND = ", leftHand);
-          //console.log("DBG: LEFT_INDEX_FINGER = ", leftIndexFinger);
-          const leftIndexFinger = extractKeypoint(leftHand, "index_finger_tip");
-          const coordsLeft = normalizedCoordsInPerc(leftIndexFinger, 640, 480);
-          console.log("normalizedCoordsInPerc LEFT = ", coordsLeft);
-          if (rightTarget) {
-            (rightTarget.value as HTMLDivElement).style.left = coordsLeft.x + "%";
-            (rightTarget.value as HTMLDivElement).style.top = coordsLeft.y + "%";
-          }
-        }
-        if (rightHand) {
-          //console.log("DBG: RIGHT_HAND = ", rightHand);
-          //console.log("DBG: RIGHT_INDEX_FINGER = ", rightIndexFinger);
-          const rightIndexFinger = extractKeypoint(rightHand, "index_finger_tip");
-          const coordsRight = normalizedCoordsInPerc(rightIndexFinger, 640, 480);
-          console.log("normalizedCoordsInPerc RIGHT = ", coordsRight);
-          if (leftTarget) {
-            (leftTarget.value as HTMLDivElement).style.left = coordsRight.x + "%";
-            (leftTarget.value as HTMLDivElement).style.top = coordsRight.y + "%";
-          }
-        }
-        */
       }
-
       window.requestAnimationFrame(predictWebcam);
     });
 }
@@ -76,18 +54,16 @@ function predictWebcam() {
 const showCamera = ref(true);
 const showTarget = ref(false);
 
-const toggleCamera = () => {
-  showCamera.value = !showCamera.value;
-};
-
 const toggleTarget = () => {
   showTarget.value = !showTarget.value;
 };
 
 onMounted(async () => {
+  //window.addEventListener("resize", onResize);
+
   const model = hdp.SupportedModels.MediaPipeHands;
   const detectorConfig: hdp.MediaPipeHandsMediaPipeModelConfig = {
-    runtime: "mediapipe", // or 'tfjs'
+    runtime: "mediapipe",
     solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/hands",
     modelType: "full",
   };
@@ -98,7 +74,7 @@ onMounted(async () => {
       console.log("Model loaded");
       (camRef.value?.video as HTMLVideoElement).addEventListener(
         "loadeddata",
-        predictWebcam //as (this: HTMLVideoElement, ev: Event) => any
+        predictWebcam
       );
       toggleTarget();
     },
@@ -106,12 +82,19 @@ onMounted(async () => {
   );
   console.log("DBG: detector = ", detector, typeof detector);
 });
+onUnmounted(() => {
+  //window.removeEventListener("resize", onResize);
+  (camRef.value?.video as HTMLVideoElement).removeEventListener(
+    "loadeddata",
+    predictWebcam
+  );
+});
 </script>
 
 <template>
   <main class="main">
     <h1>W E B C A M</h1>
-    <Camera v-if="showCamera" :width="640" :height="480" ref="camRef" />
+    <Camera v-if="showCamera" :width="_width" :height="_height" ref="camRef" />
   </main>
   <div class="target" id="target" ref="target" v-if="showTarget"></div>
   <!--
