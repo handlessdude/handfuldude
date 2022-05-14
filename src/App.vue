@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import Camera from "@/components/Camera.vue";
+import MyCamera from "@/components/MyCamera.vue";
 
 //handPoseDetection
 import * as hdp from "@tensorflow-models/hand-pose-detection";
+import * as fp from "fingerpose";
 import { attempt } from "@/utils/execControl";
 import {
   extractKeypoint,
@@ -29,20 +30,35 @@ const target = ref<HTMLDivElement>();
 const camRef = ref<{ video: HTMLVideoElement }>();
 let detector: hdp.HandDetector;
 
+const GE = new fp.GestureEstimator([
+  fp.Gestures.VictoryGesture,
+  fp.Gestures.ThumbsUpGesture,
+]);
+
 function predictWebcam() {
   detector
     .estimateHands(camRef.value?.video as HTMLVideoElement)
     .then(function (predictions) {
       if (predictions.length) {
         const hand = predictions[0];
+        try {
+          const estimatedGestures = GE.estimate(
+            hand.keypoints3D?.map((item) => [item.x, item.y, item.z]),
+            8.5
+          );
+          console.log("estimatedGestures = ", estimatedGestures);
+        } catch (error) {
+          console.log("wrong api!!!", error);
+        }
+
         const indexFingerTip = extractKeypoint(hand, "index_finger_tip");
         const coords = normalizedCoordsInPerc(
           indexFingerTip,
           _width.value,
           _height.value
         );
-        console.log("normalizedCoords = ", coords);
-        if (target) {
+        //console.log("normalizedCoords = ", coords);
+        if (target.value) {
           (target.value as HTMLDivElement).style.left = coords.x + "%";
           (target.value as HTMLDivElement).style.top = coords.y + "%";
         }
@@ -59,6 +75,7 @@ const toggleTarget = () => {
 };
 
 onMounted(async () => {
+  console.table(fp);
   //window.addEventListener("resize", onResize);
 
   const model = hdp.SupportedModels.MediaPipeHands;
@@ -94,7 +111,12 @@ onUnmounted(() => {
 <template>
   <main class="main">
     <h1>W E B C A M</h1>
-    <Camera v-if="showCamera" :width="_width" :height="_height" ref="camRef" />
+    <MyCamera
+      v-if="showCamera"
+      :width="_width"
+      :height="_height"
+      ref="camRef"
+    />
   </main>
   <div class="target" id="target" ref="target" v-if="showTarget"></div>
   <!--
