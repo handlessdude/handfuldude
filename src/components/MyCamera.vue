@@ -16,9 +16,10 @@ const props = withDefaults(
 const constraints = {
   video: true,
 };
-
+const isEnabled = ref(false);
 const video = ref<HTMLVideoElement>();
 const enableCam = () => {
+  isEnabled.value = true;
   navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
     (video.value as HTMLVideoElement).srcObject = stream;
     console.log("DBG: Webcam stream is captured!");
@@ -40,7 +41,14 @@ defineExpose({
 
 <template>
   <div id="liveView" class="camView">
-    <button id="webcamButton" @click="enableCam">Enable Webcam</button>
+    <button
+      id="webcamButton"
+      @click="enableCam"
+      :disabled="isEnabled"
+      class="btn"
+    >
+      Enable Webcam
+    </button>
     <video
       id="webcam"
       ref="video"
@@ -52,4 +60,9 @@ defineExpose({
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+video {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+</style>

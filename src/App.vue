@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from "vue";
 import MyCamera from "@/components/MyCamera.vue";
+import ModalWindow from "@/components/ModalWindow.vue";
 
 //handPoseDetection
 import * as hdp from "@tensorflow-models/hand-pose-detection";
@@ -81,9 +82,14 @@ const toggleTarget = () => {
   showTarget.value = !showTarget.value;
 };
 
+const showModal = ref(false);
+const toggleModal = () => {
+  showModal.value = !showModal.value;
+};
+
 onMounted(async () => {
   //window.addEventListener("resize", onResize);
-
+  console.log(showModal);
   const model = hdp.SupportedModels.MediaPipeHands;
   const detectorConfig: hdp.MediaPipeHandsMediaPipeModelConfig = {
     runtime: "mediapipe",
@@ -117,7 +123,7 @@ const greet = () => alert("heloo");
 
 <template>
   <main class="main">
-    <h1 @click="greet">W E B C A M</h1>
+    <h1 @click="toggleModal">W E B C A M</h1>
     <MyCamera
       v-if="showCamera"
       :width="_width"
@@ -126,6 +132,12 @@ const greet = () => alert("heloo");
     />
   </main>
   <div class="target" id="target" ref="target" v-if="showTarget"></div>
+  <ModalWindow v-bind="{ toggleModal, showModal }">
+    <div class="modal-content">
+      <h1>This is a Modal Header. Told YA!</h1>
+      <p>This is a modal message</p>
+    </div>
+  </ModalWindow>
   <!--
     <div class="target" id="leftTarget" ref="leftTarget" v-if="showTarget"></div>
     <div class="target" id="rightTarget" ref="rightTarget" v-if="showTarget"></div> 
