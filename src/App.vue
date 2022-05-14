@@ -8,7 +8,7 @@ import { attempt } from "@/utils/execControl";
 import {
   extractKeypoint,
   normalizedCoordsInPerc,
-  multiplyValue,
+  //multiplyValue,
 } from "@/utils/handsPostProcessing";
 
 import { onMounted, onUnmounted, ref } from "vue";
@@ -41,15 +41,16 @@ function predictWebcam() {
     .then(function (predictions) {
       if (predictions.length) {
         const hand = predictions[0];
-        try {
-          const estimatedGestures = GE.estimate(
-            hand.keypoints3D?.map((item) => [item.x, item.y, item.z]),
-            8.5
-          );
-          console.log("estimatedGestures = ", estimatedGestures);
-        } catch (error) {
-          console.log("wrong api!!!", error);
-        }
+        // let estimatedGestures;
+        // try {
+        //   estimatedGestures = GE.estimate(
+        //     hand.keypoints3D?.map((item) => [item.x, item.y, item.z]),
+        //     8.5
+        //   );
+        //   console.log(estimatedGestures);
+        // } catch (error) {
+        //   console.log("wrong api!!!", error);
+        // }
 
         const indexFingerTip = extractKeypoint(hand, "index_finger_tip");
         const coords = normalizedCoordsInPerc(
@@ -61,6 +62,23 @@ function predictWebcam() {
         if (target.value) {
           (target.value as HTMLDivElement).style.left = coords.x + "%";
           (target.value as HTMLDivElement).style.top = coords.y + "%";
+          const estimatedGestures = GE.estimate(
+            hand.keypoints3D?.map((item) => [item.x, item.y, item.z]),
+            8.5
+          );
+          if (
+            estimatedGestures.gestures.find(
+              (item: { name: string; score: number }) =>
+                item.name === "thumbs_up"
+            )
+          ) {
+            const x = target.value.offsetLeft;
+            const y = target.value.offsetTop;
+            const elem = document.elementFromPoint(x, y);
+            (elem as HTMLElement).click();
+            console.log(x, y, elem);
+            //сюда должен идти экшен редьюсер))
+          }
         }
       }
       window.requestAnimationFrame(predictWebcam);
@@ -75,7 +93,6 @@ const toggleTarget = () => {
 };
 
 onMounted(async () => {
-  console.table(fp);
   //window.addEventListener("resize", onResize);
 
   const model = hdp.SupportedModels.MediaPipeHands;
@@ -106,11 +123,12 @@ onUnmounted(() => {
     predictWebcam
   );
 });
+const greet = () => alert("heloo");
 </script>
 
 <template>
   <main class="main">
-    <h1>W E B C A M</h1>
+    <h1 @click="greet">W E B C A M</h1>
     <MyCamera
       v-if="showCamera"
       :width="_width"
