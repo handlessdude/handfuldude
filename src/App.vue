@@ -1,33 +1,30 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted, ref } from "vue";
 import MyCamera from "@/components/MyCamera.vue";
 
 //handPoseDetection
 import * as hdp from "@tensorflow-models/hand-pose-detection";
 import * as fp from "fingerpose";
+import { triggerEvent } from "@/utils/eventHandling";
+
 import { attempt } from "@/utils/execControl";
 import {
   extractKeypoint,
   normalizedCoordsInPerc,
-  //multiplyValue,
-} from "@/utils/handsPostProcessing";
+} from "@/utils/handPostProcessing";
 
-import { onMounted, onUnmounted, ref } from "vue";
-// stucked into the issue of max webcam resolution maybe? todo check out webcam proportions
-/*
-const QUOTIENT = 0.75;
-const _width = ref(multiplyValue(window.innerWidth, QUOTIENT));
-const _height = ref(multiplyValue(window.innerHeight, QUOTIENT));
-const onResize = () => {
-  _width.value = multiplyValue(window.innerWidth, QUOTIENT);
-  _height.value = multiplyValue(window.innerHeight, QUOTIENT);
-  console.log("new _width = ", _width.value, "new _height = ", _height.value);
-};
-*/
+import {
+  extractMaxScoreGesture,
+  gestureReducer,
+} from "@/utils/gesturePostProcessing";
+
 const _width = ref(640);
 const _height = ref(480);
 
 const target = ref<HTMLDivElement>();
 const camRef = ref<{ video: HTMLVideoElement }>();
+
+//hand estimation
 let detector: hdp.HandDetector;
 
 const GE = new fp.GestureEstimator([
@@ -41,17 +38,6 @@ function predictWebcam() {
     .then(function (predictions) {
       if (predictions.length) {
         const hand = predictions[0];
-        // let estimatedGestures;
-        // try {
-        //   estimatedGestures = GE.estimate(
-        //     hand.keypoints3D?.map((item) => [item.x, item.y, item.z]),
-        //     8.5
-        //   );
-        //   console.log(estimatedGestures);
-        // } catch (error) {
-        //   console.log("wrong api!!!", error);
-        // }
-
         const indexFingerTip = extractKeypoint(hand, "index_finger_tip");
         const coords = normalizedCoordsInPerc(
           indexFingerTip,
@@ -66,18 +52,18 @@ function predictWebcam() {
             hand.keypoints3D?.map((item) => [item.x, item.y, item.z]),
             8.5
           );
-          if (
-            estimatedGestures.gestures.find(
-              (item: { name: string; score: number }) =>
-                item.name === "thumbs_up"
-            )
-          ) {
+          if (estimatedGestures.gestures.length) {
+            console.log(estimatedGestures.gestures);
+            const gesture = extractMaxScoreGesture(estimatedGestures.gestures);
+            const action = gestureReducer(gesture);
+
             const x = target.value.offsetLeft;
             const y = target.value.offsetTop;
             const elem = document.elementFromPoint(x, y);
-            (elem as HTMLElement).click();
-            console.log(x, y, elem);
-            //сюда должен идти экшен редьюсер))
+            if (action && elem) {
+              console.log(`firing ${action} action on ${elem}!`);
+              triggerEvent(elem as HTMLElement, action);
+            }
           }
         }
       }
@@ -103,7 +89,7 @@ onMounted(async () => {
   };
 
   detector = await attempt(
-    async () => /*await*/ hdp.createDetector(model, detectorConfig),
+    async () => await hdp.createDetector(model, detectorConfig),
     () => {
       console.log("Model loaded");
       (camRef.value?.video as HTMLVideoElement).addEventListener(
