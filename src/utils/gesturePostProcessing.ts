@@ -1,3 +1,5 @@
+import { createEvent, createKeyboardEvent } from "@/utils/eventHandling";
+
 export interface IGesture {
   name: string;
   score: number;
@@ -15,26 +17,22 @@ export function extractMaxScoreGesture(gestures: IGesture[]) {
 
 export enum GestureTypes {
   THUMBS_UP = "thumbs_up",
+  THUMBS_DOWN = "thumbs_down",
   VICTORY = "victory",
+  STOP = "free_hand",
 }
 
-// -_- wtf typescript problems
-// const GesturesMapActions = {
-//   [GestureTypes.THUMBS_UP]: "click",
-//   [GestureTypes.VICTORY]: "focus",
-// };
 export function gestureReducer(gesture: IGesture) {
   switch (gesture.name) {
+    case GestureTypes.THUMBS_DOWN:
+      return createKeyboardEvent("keydown", { key: "Escape" });
     case GestureTypes.THUMBS_UP:
-      return "click";
+      return createKeyboardEvent("keydown", { key: "Enter" });
     case GestureTypes.VICTORY:
-      return "focus";
+      return createEvent("click");
+    case GestureTypes.STOP:
+      return createEvent("focus");
     default:
       return null;
   }
-
-  //   if (Object.prototype.hasOwnProperty(GesturesMapActions, gesture.name)) {
-  //     return GesturesMapActions[gesture.name];
-  //   }
-  //return GesturesMapActions[gesture.name];
 }

@@ -5,7 +5,6 @@ import MyCamera from "@/components/MyCamera.vue";
 //handPoseDetection
 import * as hdp from "@tensorflow-models/hand-pose-detection";
 import * as fp from "fingerpose";
-import { triggerEvent } from "@/utils/eventHandling";
 
 import { attempt } from "@/utils/execControl";
 import {
@@ -17,6 +16,8 @@ import {
   extractMaxScoreGesture,
   gestureReducer,
 } from "@/utils/gesturePostProcessing";
+
+import MyGestures from "@/utils/gestureDefinitions";
 
 const _width = ref(640);
 const _height = ref(480);
@@ -30,6 +31,8 @@ let detector: hdp.HandDetector;
 const GE = new fp.GestureEstimator([
   fp.Gestures.VictoryGesture,
   fp.Gestures.ThumbsUpGesture,
+  MyGestures.freeHandGesture,
+  MyGestures.thumbsDownGesture,
 ]);
 
 function predictWebcam() {
@@ -55,14 +58,14 @@ function predictWebcam() {
           if (estimatedGestures.gestures.length) {
             console.log(estimatedGestures.gestures);
             const gesture = extractMaxScoreGesture(estimatedGestures.gestures);
-            const action = gestureReducer(gesture);
 
             const x = target.value.offsetLeft;
             const y = target.value.offsetTop;
             const elem = document.elementFromPoint(x, y);
-            if (action && elem) {
-              console.log(`firing ${action} action on ${elem}!`);
-              triggerEvent(elem as HTMLElement, action);
+            if (gesture && elem) {
+              const e = gestureReducer(gesture);
+              console.log(`firing action on element!`, e, elem);
+              e && elem.dispatchEvent(e);
             }
           }
         }
