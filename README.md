@@ -9,6 +9,8 @@ Currently 4 gestures available:
 
 Just enable the webcam and try it out! 
 
+> The event generation is also enabled, but no debouncer yet. Try "point" on the green header at the top of the viewport!
+
 ## Run the project
 
 ```sh
