@@ -31,20 +31,22 @@ const props = defineProps<{
   position: fixed;
   top: 0;
   left: 0;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.089);
   .modal-inner {
+    color: var(--dark-gray);
     position: relative;
-    max-width: 640px;
-    width: 80%;
+    z-index: 999;
+    // max-width: 640px;
+    // width: 80%;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
       0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    background-color: #fff;
-    padding: 64px 16px;
+    background: #fff;
+    padding: 1rem;
     i {
       position: absolute;
-      top: 15px;
-      right: 15px;
-      font-size: 20px;
+      top: 1re;
+      right: 1rem;
+      font-size: 1.5rem;
       cursor: pointer;
       &:hover {
         color: crimson;

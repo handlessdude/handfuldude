@@ -42,7 +42,7 @@ function predictWebcam() {
     .then(function (predictions) {
       if (predictions.length) {
         const hand = predictions[0];
-        const indexFingerTip = extractKeypoint(hand, "index_finger_tip");
+        const indexFingerTip = extractKeypoint(hand, 9); // extracting middle finger base
         const coords = normalizedCoordsInPerc(
           indexFingerTip,
           _width.value,
@@ -149,21 +149,9 @@ const greet = () => alert("heloo");
 @import "@/assets/scrollbar.css";
 @import "@/assets/containers.scss";
 
-body,
 #app {
-  height: 100vh;
-  width: 100vw;
-}
-
-.main {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .target {
@@ -187,6 +175,7 @@ h1 {
   font-weight: 500;
   font-size: 2.6rem;
   top: -10px;
+  text-align: center;
 }
 
 h3 {
