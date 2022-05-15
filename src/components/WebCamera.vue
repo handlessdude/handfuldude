@@ -13,33 +13,34 @@ const props = withDefaults(
   }
 );
 
+const isEnabled = ref(false);
+const video = ref<HTMLVideoElement>();
+
 const constraints = {
   video: true,
 };
-const isEnabled = ref(false);
-const video = ref<HTMLVideoElement>();
+
 const toggleCam = () => {
   if (!isEnabled.value) {
     isEnabled.value = true;
     navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
       (video.value as HTMLVideoElement).srcObject = stream;
       console.log("DBG: Webcam stream is captured!");
-      // это работает!
-      // console.log(props.callback);
-      // if (props.callback) {
-      //   (video.value as HTMLVideoElement).addEventListener(
-      //     "loadeddata",
-      //     props.callback as (this: HTMLVideoElement, ev: Event) => any
-      //   );
-      // }
+      /*
+      это работает!
+      console.log(props.callback);
+      if (props.callback) {
+        (video.value as HTMLVideoElement).addEventListener(
+          "loadeddata",
+          props.callback as (this: HTMLVideoElement, ev: Event) => any
+        );
+      }*/
     });
   } else {
     console.log("Cam is already enabled.");
   }
 };
-defineExpose({
-  video,
-});
+defineExpose({ isEnabled, video });
 </script>
 
 <template>
@@ -57,8 +58,8 @@ defineExpose({
       ref="video"
       autoplay
       muted
-      :width="width"
-      :height="height"
+      :width="props.width"
+      :height="props.height"
     ></video>
   </div>
 </template>
