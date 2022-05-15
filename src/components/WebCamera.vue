@@ -75,5 +75,6 @@ defineExpose({ isEnabled, video });
   margin-top: 2rem;
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
+  border-radius: var(--round-borders-radius);
 }
 </style>

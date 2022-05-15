@@ -11,10 +11,11 @@ const props = defineProps<{
     <div v-show="props.showModal" @click.self="props.toggleModal" class="modal">
       <transition name="modal-animation-inner">
         <div v-show="props.showModal" class="modal-inner">
-          <i @click="props.toggleModal" class="far fa-times-circle"></i>
           <!-- Modal Content -->
           <slot />
-          <button @click="props.toggleModal" type="button">Close</button>
+          <button @click="props.toggleModal" type="button" class="btn">
+            Close
+          </button>
         </div>
       </transition>
     </div>
@@ -33,6 +34,10 @@ const props = defineProps<{
   left: 0;
   background-color: rgba(255, 255, 255, 0.089);
   .modal-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     color: var(--dark-gray);
     position: relative;
     z-index: 999;
@@ -42,22 +47,10 @@ const props = defineProps<{
       0 2px 4px -1px rgba(0, 0, 0, 0.06);
     background: #fff;
     padding: 1rem;
-    i {
-      position: absolute;
-      top: 1re;
-      right: 1rem;
-      font-size: 1.5rem;
-      cursor: pointer;
-      &:hover {
-        color: crimson;
-      }
-    }
-    button {
+    .btn {
       padding: 20px 30px;
       border: none;
-      font-size: 16px;
       background-color: crimson;
-      color: #fff;
       cursor: pointer;
     }
   }

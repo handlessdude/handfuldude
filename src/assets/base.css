@@ -18,7 +18,7 @@
   --sidebar-padding:  8px;
   --rv-wrapper-padding:  20px;
   --preloader-wrapper-size: 80px;
-  --round-borders-radius: 4px;
+  --round-borders-radius: 5px;
   --circle-border-radius: 100px;
 }
 /* color palette from <https://github.com/vuejs/theme> */
@@ -80,7 +80,6 @@
 
 html, body {
   height: 100vh;
-  width: 100vw;
   margin: 0;
 }
 
@@ -105,6 +104,7 @@ body {
 }
 
 main {
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -132,9 +132,9 @@ textarea:focus {
 textarea:disabled{
   background-color: white;
 }
-textarea, h1{
+/* textarea, h1{
   width: 100%;
-}
+} */
 textarea#query{
   height: 4rem;
   margin-bottom: 1rem;

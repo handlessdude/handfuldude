@@ -19,6 +19,7 @@ export enum GestureTypes {
   THUMBS_UP = "thumbs_up",
   THUMBS_DOWN = "thumbs_down",
   VICTORY = "victory",
+  POINT = "point",
   STOP = "free_hand",
 }
 
@@ -29,6 +30,8 @@ export function gestureReducer(gesture: IGesture) {
     case GestureTypes.THUMBS_UP:
       return createKeyboardEvent("keydown", { key: "Enter" });
     case GestureTypes.VICTORY:
+      return createKeyboardEvent("keydown", { key: "KeyY" });
+    case GestureTypes.POINT:
       return createEvent("click");
     case GestureTypes.STOP:
       return createEvent("focus");

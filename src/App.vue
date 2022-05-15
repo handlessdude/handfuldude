@@ -13,14 +13,14 @@ import ModalWindow from "@/components/ModalWindow.vue";
 */
 import * as fp from "fingerpose";
 import { useGestureControls } from "@/hooks/useGestureControls";
+import { useGestureIcon } from "@/hooks/useGestureIcon";
 import MyGestures from "@/utils/gestureDefinitions";
-
 /* initializing controls logic*/
 const gestures = [
-  fp.Gestures.VictoryGesture,
   fp.Gestures.ThumbsUpGesture,
   MyGestures.freeHandGesture,
   MyGestures.thumbsDownGesture,
+  MyGestures.pointGesture,
 ];
 const {
   width,
@@ -33,15 +33,22 @@ const {
   camRef,
   showCamera,
 
+  currentGesture,
+
   initDetector,
   clearDetector,
 } = useGestureControls(gestures);
 
+/* modal window controlling */
 const showModal = ref(false);
 const toggleModal = () => {
   showModal.value = !showModal.value;
 };
 
+/* for indicating which gesture is currently active */
+const { solidClass, gestureIcon } = useGestureIcon(currentGesture);
+
+/* setting up the environment */
 onMounted(async () => {
   await initDetector();
 });
@@ -51,21 +58,19 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <header class="header" @click="toggleModal">
+    <h1 class="header--title">Handfuldude</h1>
+    <h1 class="header--gesture"><i :class="[gestureIcon, solidClass]"></i></h1>
+  </header>
   <main class="main">
-    <h1 @click="toggleModal">W E B C A M</h1>
     <WebCamera v-if="showCamera" ref="camRef" v-bind="{ width, height }" />
   </main>
   <div v-if="showTarget" ref="target" class="target" id="target"></div>
   <ModalWindow v-bind="{ toggleModal, showModal }">
     <div class="modal-content">
-      <h1>This is a Modal Header. Told YA!</h1>
-      <p>This is a modal message</p>
+      <h1>Seems like gesture classifier does its job</h1>
     </div>
   </ModalWindow>
-  <!--
-    <div class="target" id="leftTarget" ref="leftTarget" v-if="showTarget"></div>
-    <div class="target" id="rightTarget" ref="rightTarget" v-if="showTarget"></div> 
-  -->
 </template>
 
 <style lang="scss">
@@ -94,12 +99,32 @@ onUnmounted(() => {
 //просто красивые цвета
 //hsla(160, 100%, 37%, 1);
 //hsla(160, 100%, 37%, 0.2);
+.header {
+  display: flex;
+  align-items: center;
+  height: 5rem;
+  background: linear-gradient(
+    90deg,
+    var(--emerald) 1.18%,
+    var(--light-emerald) 100%
+  );
+  color: white;
+  padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+}
+
+.header--image {
+  height: 100%;
+  margin-right: 6px;
+}
+
+.header--title {
+  font-size: 1.5rem;
+  margin-right: auto;
+}
 
 h1 {
   font-weight: 500;
   font-size: 2.6rem;
-  top: -10px;
-  text-align: center;
 }
 
 h3 {
