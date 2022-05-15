@@ -16,4 +16,3 @@ Just enable the webcam and try it out!
 npm install
 npm run dev
 ```
-And don't forget to enable WebGL in your Chrome!
