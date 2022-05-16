@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { attempt } from "@/utils/execControl";
 
 import * as hdp from "@tensorflow-models/hand-pose-detection";
@@ -98,20 +98,11 @@ export function useGestureControls(
               9.0 //MIN SCORE! REFINE INTO PARAMETERS
             );
             if (estimatedGestures.gestures.length) {
-              console.log(estimatedGestures.gestures);
+              //console.log(new Date().getMilliseconds());
+              //console.log(estimatedGestures.gestures);
               currentGesture.value = extractMaxScoreGesture(
                 estimatedGestures.gestures
               );
-
-              /*determining if we hit some html element*/
-              const x = target.value.offsetLeft;
-              const y = target.value.offsetTop;
-              const elem = document.elementFromPoint(x, y);
-              if (elem) {
-                const e = gestureReducer(currentGesture.value);
-                e && elem.dispatchEvent(e);
-                console.log(`firing action on element!`, e, elem);
-              }
             } else {
               currentGesture.value = { name: "", score: 0 };
             }
@@ -120,6 +111,34 @@ export function useGestureControls(
         window.requestAnimationFrame(predictWebcam);
       });
   }
+
+  const TICKS_TO_FIRE = 30;
+  let gestureDuration = 0;
+  /**
+   * DEBOUNCER
+   */
+  watch(currentGesture, (newGesture: IGesture, oldGesture: IGesture) => {
+    if (target.value) {
+      if (newGesture.name === oldGesture.name) {
+        gestureDuration++;
+      } else {
+        gestureDuration = 0;
+      }
+
+      if (gestureDuration >= TICKS_TO_FIRE) {
+        gestureDuration = 0;
+        /*determining if we hit some html element*/
+        const x = target.value.offsetLeft;
+        const y = target.value.offsetTop;
+        const elem = document.elementFromPoint(x, y);
+        if (elem) {
+          const e = gestureReducer(currentGesture.value);
+          e && elem.dispatchEvent(e); // ВОТ СЮДА НАДО ДЕБАУНС ВСТАВИТЬ
+          console.log(`firing action on element!`, e, elem);
+        }
+      }
+    }
+  });
 
   return {
     width,
