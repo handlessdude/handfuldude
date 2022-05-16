@@ -98,7 +98,6 @@ export function useGestureControls(
               9.0 //MIN SCORE! REFINE INTO PARAMETERS
             );
             if (estimatedGestures.gestures.length) {
-              //console.log(new Date().getMilliseconds());
               //console.log(estimatedGestures.gestures);
               currentGesture.value = extractMaxScoreGesture(
                 estimatedGestures.gestures
@@ -112,14 +111,14 @@ export function useGestureControls(
       });
   }
 
-  const TICKS_TO_FIRE = 30;
+  const TICKS_TO_FIRE = 35;
   let gestureDuration = 0;
   /**
-   * DEBOUNCER
+   * Dispatches corresponding event only if the same gesture has been recognized consecutively TICKS_TO_FIRE times
    */
-  watch(currentGesture, (newGesture: IGesture, oldGesture: IGesture) => {
+  function debounceEventGeneration(newGesture: IGesture, oldGesture: IGesture) {
     if (target.value) {
-      if (newGesture.name === oldGesture.name) {
+      if (newGesture.name === oldGesture.name && !(newGesture.name === "")) {
         gestureDuration++;
       } else {
         gestureDuration = 0;
@@ -133,12 +132,13 @@ export function useGestureControls(
         const elem = document.elementFromPoint(x, y);
         if (elem) {
           const e = gestureReducer(currentGesture.value);
-          e && elem.dispatchEvent(e); // ВОТ СЮДА НАДО ДЕБАУНС ВСТАВИТЬ
+          e && elem.dispatchEvent(e);
           console.log(`firing action on element!`, e, elem);
         }
       }
     }
-  });
+  }
+  watch(currentGesture, debounceEventGeneration);
 
   return {
     width,
