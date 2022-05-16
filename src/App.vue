@@ -15,6 +15,7 @@ import * as fp from "fingerpose";
 import { useGestureControls } from "@/hooks/useGestureControls";
 import { useGestureIcon } from "@/hooks/useGestureIcon";
 import MyGestures from "@/utils/gestureDefinitions";
+import { useTargetStyle } from "./hooks/useTargetStyle";
 /* initializing controls logic*/
 const gestures = [
   fp.Gestures.ThumbsUpGesture,
@@ -47,6 +48,7 @@ const toggleModal = () => {
 
 /* for indicating which gesture is currently active */
 const { solidClass, gestureIcon } = useGestureIcon(currentGesture);
+const { targetClass } = useTargetStyle(currentGesture);
 
 /* setting up the environment */
 onMounted(async () => {
@@ -58,14 +60,32 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <header class="header" @click="toggleModal">
+  <header class="header">
     <h1 class="header--title">Handfuldude</h1>
     <h1 class="header--gesture"><i :class="[gestureIcon, solidClass]"></i></h1>
   </header>
   <main class="main">
     <WebCamera v-if="showCamera" ref="camRef" v-bind="{ width, height }" />
+    <button
+      class="btn"
+      style="
+        font-size: 3rem;
+        width: auto;
+        background-color: crimson;
+        border: none;
+        margin-top: 2rem;
+      "
+      @click="toggleModal"
+    >
+      PLACE THE TARGET HERE and try out "click" gesture
+    </button>
   </main>
-  <div v-if="showTarget" ref="target" class="target" id="target"></div>
+  <div
+    v-if="showTarget"
+    ref="target"
+    :class="`target ${targetClass}`"
+    id="target"
+  ></div>
   <ModalWindow v-bind="{ toggleModal, showModal }">
     <div class="modal-content">
       <h1>Seems like gesture classifier does its job</h1>
@@ -89,13 +109,14 @@ onUnmounted(() => {
   right: 50%;
   border-radius: 50%;
   border: 2px dashed white;
-  background-color: hsla(160, 100%, 37%, 1);
   width: 2rem;
   height: 2rem;
   z-index: 10;
   transition: 0.4s;
 }
-
+.target-filled {
+  background-color: hsla(160, 100%, 37%, 1);
+}
 //просто красивые цвета
 //hsla(160, 100%, 37%, 1);
 //hsla(160, 100%, 37%, 0.2);
