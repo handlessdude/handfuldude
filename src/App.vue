@@ -38,7 +38,7 @@ const {
 
   initDetector,
   clearDetector,
-} = useGestureControls(gestures);
+} = useGestureControls(gestures, { width: 1280, height: 720 });
 
 /* modal window controlling */
 const showModal = ref(false);
@@ -61,12 +61,23 @@ onUnmounted(() => {
 
 <template>
   <header class="header">
-    <h1 class="header--title">Handfuldude</h1>
+    <div class="controls">
+      <h1 class="header--title">Handfuldude</h1>
+      <button
+        id="webcamButton"
+        @click="camRef?.toggleCam"
+        :disabled="camRef?.isEnabled"
+        class="btn"
+      >
+        Enable Webcam
+      </button>
+    </div>
+
     <h1 class="header--gesture"><i :class="[gestureIcon, solidClass]"></i></h1>
   </header>
   <main class="main">
     <WebCamera v-if="showCamera" ref="camRef" v-bind="{ width, height }" />
-    <button
+    <!-- <button
       class="btn"
       style="
         font-size: 3rem;
@@ -78,7 +89,7 @@ onUnmounted(() => {
       @click="toggleModal"
     >
       PLACE THE TARGET HERE and try out "click" gesture
-    </button>
+    </button> -->
   </main>
   <div
     v-if="showTarget"
@@ -102,7 +113,11 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
 }
-
+#webcam {
+  position: absolute;
+  top: var(--header-height);
+  right: 0;
+}
 .target {
   position: absolute;
   top: 50%;
@@ -140,9 +155,17 @@ onUnmounted(() => {
 
 .header--title {
   font-size: 1.5rem;
-  margin-right: auto;
+  //margin-right: auto;
 }
-
+.controls {
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  .btn {
+    margin-left: 1rem;
+    height: 50%;
+  }
+}
 h1 {
   font-weight: 500;
   font-size: 2.6rem;

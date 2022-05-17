@@ -36,7 +36,11 @@ export function useGestureControls(
   };
 
   /* camera which image we will be using */
-  const camRef = ref<{ video: HTMLVideoElement }>();
+  const camRef = ref<{
+    video: HTMLVideoElement;
+    isEnabled: boolean;
+    toggleCam: () => void;
+  }>();
   const showCamera = ref(true);
 
   /* here will dwell our current gesture */

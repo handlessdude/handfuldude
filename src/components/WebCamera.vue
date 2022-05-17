@@ -5,7 +5,6 @@ const props = withDefaults(
   defineProps<{
     width: number;
     height: number;
-    //callback?: Function;
   }>(),
   {
     width: 640,
@@ -17,7 +16,11 @@ const isEnabled = ref(false);
 const video = ref<HTMLVideoElement>();
 
 const constraints = {
-  video: true,
+  audio: false,
+  video: {
+    width: { ideal: props.width },
+    height: { ideal: props.height },
+  },
 };
 
 const toggleCam = () => {
@@ -26,55 +29,35 @@ const toggleCam = () => {
     navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
       (video.value as HTMLVideoElement).srcObject = stream;
       console.log("DBG: Webcam stream is captured!");
-      /*
-      это работает!
-      console.log(props.callback);
-      if (props.callback) {
-        (video.value as HTMLVideoElement).addEventListener(
-          "loadeddata",
-          props.callback as (this: HTMLVideoElement, ev: Event) => any
-        );
-      }*/
     });
   } else {
     console.log("Cam is already enabled.");
   }
 };
-defineExpose({ isEnabled, video });
+defineExpose({ isEnabled, video, toggleCam });
 </script>
 
 <template>
-  <div id="camView">
-    <button
-      id="webcamButton"
-      @click="toggleCam"
-      :disabled="isEnabled"
-      class="btn"
-    >
-      Enable Webcam
-    </button>
-    <video
-      id="webcam"
-      ref="video"
-      autoplay
-      muted
-      :width="props.width"
-      :height="props.height"
-    ></video>
-  </div>
+  <video
+    id="webcam"
+    ref="video"
+    autoplay
+    muted
+    width="212"
+    height="120"
+  ></video>
 </template>
 
 <style scoped>
-#camView {
+/* #camView {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-#camView > video {
-  margin-top: 2rem;
+} */
+video {
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
-  border-radius: var(--round-borders-radius);
+  border-bottom-right-radius: var(--round-borders-radius);
 }
 </style>
