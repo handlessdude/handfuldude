@@ -9,7 +9,7 @@ Currently 4 gestures available:
 
 Just enable the webcam and try it out! 
 
-> The event generation and debouncer are enabled! Try it out "pointing" on the red button below the webcam block.
+> Currently event generation, debouncer and routing via user menu are enabled! Try it out "pointing" on the bookmark-looking button to reveal the menu.
 
 ## Run the project
 ```sh
