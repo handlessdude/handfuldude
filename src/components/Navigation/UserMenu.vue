@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MenuLink from "@/components/Navigation/MenuLink.vue";
+import { computed, onMounted, onUnmounted, ref, watch, watchEffect } from "vue";
 const props = defineProps<{
   showMenu: boolean;
   toggleMenu: () => void;
@@ -15,14 +16,41 @@ const MenuLinks = {
     name: "About Page",
     icon: "fas fa-chart-bar",
   },
+  "/page1": {
+    name: "Some Page 1",
+    icon: "fas fa-chart-bar",
+  },
+  "/page2": {
+    name: "Some Page 2",
+    icon: "fas fa-chart-bar",
+  },
+  "/page3": {
+    name: "Some Page 3",
+    icon: "fas fa-chart-bar",
+  },
+  "/page4": {
+    name: "Some Page 4",
+    icon: "fas fa-chart-bar",
+  },
+  "/page5": {
+    name: "Some Page 5",
+    icon: "fas fa-chart-bar",
+  },
+  "/page6": {
+    name: "Some Page 6",
+    icon: "fas fa-chart-bar",
+  },
 };
 </script>
 
 <template>
   <transition name="menu-animation">
-    <div v-show="props.showMenu" @click.self="props.toggleMenu" class="menu">
+    <div v-if="props.showMenu" @click.self="props.toggleMenu" class="menu">
       <transition name="menu-animation-inner">
-        <div v-show="props.showMenu" class="menu-inner">
+        <div v-if="props.showMenu" class="menu-inner">
+          <div class="toggle" @click.self="toggleMenu">
+            <i class="fa-solid fa-plus-large" />Menu
+          </div>
           <MenuLink
             v-for="(value, key, index) in MenuLinks"
             :style="`--i:${index}`"
@@ -41,7 +69,7 @@ const MenuLinks = {
   </transition>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .menu {
   z-index: 1000;
   display: flex;
@@ -56,25 +84,66 @@ const MenuLinks = {
   bottom: 0;
   background-color: rgba(255, 255, 255, 0.089);
   .menu-inner {
-    width: 400px;
-    height: 400px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-radius: var(--circle-border-radius);
+    width: var(--menu-size);
+    height: var(--menu-size);
+    border-radius: var(--menu-icon-border-radius);
     color: var(--dark-gray);
-    position: relative;
-    z-index: 1000;
+    background: #fff;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
       0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    background: #fff;
-    padding: 1rem;
-    .btn {
-      padding: 20px 30px;
-      border: none;
-      background-color: crimson;
+
+    position: relative;
+    z-index: 1000;
+
+    .toggle {
+      position: absolute;
+      width: var(--menu-icon-size);
+      height: var(--menu-icon-size);
+      border-radius: var(--menu-icon-border-radius);
+      background-color: white;
+
+      z-index: 1000;
       cursor: pointer;
+      box-shadow: 0 3px 4px rgba(0, 0, 0, 0.15);
+      font-size: 2em;
+      transition: 1.25s;
+    }
+  }
+
+  /*НЕ ТРОГАТЬ*/
+  .link {
+    position: absolute;
+    left: 0;
+    list-style: none;
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.15);
+    .a-content {
+      transform: rotate(calc(360deg / -8 * var(--i)));
+    }
+
+    transform-origin: calc(var(--menu-size) / 2);
+    transform: rotate(0deg)
+      translateX(calc((var(--menu-size) - var(--menu-icon-size)) / 2));
+    transition: 0.5s;
+    animation: mymove 0.3s 1; /* Указываем название анимации, её время и количество повторов*/
+    animation-fill-mode: forwards; /* Чтобы элемент оставался в конечном состоянии анимации */
+    animation-delay: calc(0.1s * var(--i)); /* Задержка перед началом */
+  }
+  @keyframes mymove {
+    from {
+      transform: rotate(0deg)
+        translateX(calc((var(--menu-size) - var(--menu-icon-size)) / 2));
+    }
+    to {
+      transform: rotate(calc(360deg / 8 * var(--i)));
+    }
+  }
+  .menu-inner.active {
+    .toggle {
+      transform: rotate(315deg);
     }
   }
 }

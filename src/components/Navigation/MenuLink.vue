@@ -12,16 +12,18 @@ const isActive = computed(() => route.path === props.to);
 
 <template>
   <router-link :to="to" class="link" :class="{ active: isActive }">
-    <i class="icon" :class="icon" />
-    <transition name="fade">
-      <div>
-        <slot />
-      </div>
-    </transition>
+    <div class="a-content">
+      <i class="icon" :class="icon" />
+      <transition name="fade">
+        <div>
+          <slot />
+        </div>
+      </transition>
+    </div>
   </router-link>
 </template>
 
-<style scoped>
+<style lang="scss">
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.1s;
@@ -34,17 +36,15 @@ const isActive = computed(() => route.path === props.to);
   display: flex;
   align-items: center;
   cursor: pointer;
-  position: relative;
   font-weight: 400;
   user-select: none;
-  margin: 0.1em 0;
   padding: 0.4em;
-  border-radius: 0.25em;
+  border-radius: var(--menu-icon-border-radius);
   color: white;
   text-decoration: none;
-  width: var(--menu-btn-width);
-  height: var(--menu-btn-height);
-  background-color: var(--dark-gray);
+  width: var(--menu-icon-size);
+  height: var(--menu-icon-size);
+  background-color: crimson;
 }
 .link:hover {
   background-color: var(--sidebar-item-hover);

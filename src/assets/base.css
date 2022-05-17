@@ -22,6 +22,10 @@
   --sidebar-bg-color: #2f855a;
   --sidebar-item-hover: #38a169;
   --sidebar-item-active: #276749;
+  --menu-size: 500px;
+  --menu-padding: 2rem;
+  --menu-icon-size: 100px;
+  --menu-icon-border-radius: 50%;
 }
 /* color palette from <https://github.com/vuejs/theme> */
 :root {

@@ -66,13 +66,11 @@ onUnmounted(() => {
   <main class="main">
     <WebCamera v-if="showCamera" ref="camRef" v-bind="{ width, height }" />
 
-    <div class="card">
-      <router-view v-slot="{ Component }">
-        <transition name="router-anim">
-          <component :is="Component"></component>
-        </transition>
-      </router-view>
-    </div>
+    <router-view v-slot="{ Component }">
+      <transition name="router-anim">
+        <component :is="Component"></component>
+      </transition>
+    </router-view>
   </main>
   <div
     v-if="showTarget"
