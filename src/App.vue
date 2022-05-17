@@ -47,10 +47,10 @@ const { gestureIconClass } = useGestureIcon(currentGesture);
 const { targetClass } = useTargetStyle(currentGesture);
 
 /* modal window controlling */
-const showModal = ref(false);
-const toggleModal = () => {
-  showModal.value = !showModal.value;
-};
+// const showModal = ref(false);
+// const toggleModal = () => {
+//   showModal.value = !showModal.value;
+// };
 
 /* setting up the environment */
 onMounted(async () => {
@@ -80,11 +80,12 @@ onUnmounted(() => {
     :class="`target ${targetClass}`"
     id="target"
   ></div>
-  <ModalWindow v-bind="{ toggleModal, showModal }">
+
+  <!-- <ModalWindow v-bind="{ toggleModal, showModal }">
     <div class="modal-content">
       <h1>Seems like gesture classifier does its job</h1>
     </div>
-  </ModalWindow>
+  </ModalWindow> -->
 </template>
 
 <style lang="scss">
@@ -137,7 +138,7 @@ h3 {
 }
 @keyframes coming {
   0% {
-    transform: translateY(-100%);
+    transform: translateY(50%);
     opacity: 0;
   }
   100% {
@@ -146,14 +147,14 @@ h3 {
   }
 }
 .router-anim-leave-active {
-  animation: going 1;
+  animation: going 1s;
 }
 @keyframes going {
   from {
     transform: translateY(0);
   }
   to {
-    transform: translateY(-100%);
+    transform: translateY(50%);
     opacity: 0;
   }
 }
