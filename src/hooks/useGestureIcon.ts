@@ -26,7 +26,11 @@ export function useGestureIcon(
         return "";
     }
   });
-  const solidClass = ref("fa-solid");
+  const customClass = ref("fa-solid");
 
-  return { solidClass, gestureIcon };
+  const gestureIconClass = computed(
+    () => `${customClass.value} ${gestureIcon.value}`
+  );
+
+  return { gestureIconClass };
 }

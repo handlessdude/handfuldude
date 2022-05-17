@@ -115,7 +115,7 @@ export function useGestureControls(
       });
   }
 
-  const TICKS_TO_FIRE = 35;
+  const TICKS_TO_FIRE = 30;
   let gestureDuration = 0;
   /**
    * Dispatches corresponding event only if the same gesture has been recognized consecutively TICKS_TO_FIRE times

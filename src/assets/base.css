@@ -14,9 +14,14 @@
   --lightest-emerald: #38a169;
   --greeny: #63d2a6;
   --header-height: 5rem;
+  --menu-btn-width: 7rem;
+  --menu-btn-height: 3rem;
   --preloader-wrapper-size: 80px;
   --round-borders-radius: 5px;
   --circle-border-radius: 100px;
+  --sidebar-bg-color: #2f855a;
+  --sidebar-item-hover: #38a169;
+  --sidebar-item-active: #276749;
 }
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
@@ -101,11 +106,17 @@ body {
 }
 
 main {
-  padding: 2rem;
+  padding: var(--menu-btn-height) 1rem 1rem 1rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  position: fixed;
+  top: var(--header-height);
+  right:0;
+  left:0;
+  bottom: 0;
+  z-index: 990;
 }
 
 input,

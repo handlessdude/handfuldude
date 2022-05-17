@@ -8,14 +8,16 @@ import { onMounted, onUnmounted, ref } from "vue";
 */
 import WebCamera from "@/components/WebCamera.vue";
 import ModalWindow from "@/components/ModalWindow.vue";
+import NavHeader from "./components/Navigation/NavHeader.vue";
 /*
   gesture controls logic import
 */
 import * as fp from "fingerpose";
 import { useGestureControls } from "@/hooks/useGestureControls";
 import { useGestureIcon } from "@/hooks/useGestureIcon";
-import MyGestures from "@/utils/gestureDefinitions";
 import { useTargetStyle } from "./hooks/useTargetStyle";
+import MyGestures from "@/utils/gestureDefinitions";
+
 /* initializing controls logic*/
 const gestures = [
   fp.Gestures.ThumbsUpGesture,
@@ -40,15 +42,15 @@ const {
   clearDetector,
 } = useGestureControls(gestures, { width: 1280, height: 720 });
 
+/* for indicating which gesture is currently active */
+const { gestureIconClass } = useGestureIcon(currentGesture);
+const { targetClass } = useTargetStyle(currentGesture);
+
 /* modal window controlling */
 const showModal = ref(false);
 const toggleModal = () => {
   showModal.value = !showModal.value;
 };
-
-/* for indicating which gesture is currently active */
-const { solidClass, gestureIcon } = useGestureIcon(currentGesture);
-const { targetClass } = useTargetStyle(currentGesture);
 
 /* setting up the environment */
 onMounted(async () => {
@@ -60,36 +62,17 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <header class="header">
-    <div class="controls">
-      <h1 class="header--title">Handfuldude</h1>
-      <button
-        id="webcamButton"
-        @click="camRef?.toggleCam"
-        :disabled="camRef?.isEnabled"
-        class="btn"
-      >
-        Enable Webcam
-      </button>
-    </div>
-
-    <h1 class="header--gesture"><i :class="[gestureIcon, solidClass]"></i></h1>
-  </header>
+  <NavHeader v-bind="{ gestureIconClass, camRef }" />
   <main class="main">
     <WebCamera v-if="showCamera" ref="camRef" v-bind="{ width, height }" />
-    <!-- <button
-      class="btn"
-      style="
-        font-size: 3rem;
-        width: auto;
-        background-color: crimson;
-        border: none;
-        margin-top: 2rem;
-      "
-      @click="toggleModal"
-    >
-      PLACE THE TARGET HERE and try out "click" gesture
-    </button> -->
+
+    <div class="card">
+      <router-view v-slot="{ Component }">
+        <transition name="router-anim">
+          <component :is="Component"></component>
+        </transition>
+      </router-view>
+    </div>
   </main>
   <div
     v-if="showTarget"
@@ -112,6 +95,7 @@ onUnmounted(() => {
 #app {
   width: 100%;
   height: 100%;
+  position: relative;
 }
 #webcam {
   position: absolute;
@@ -126,7 +110,8 @@ onUnmounted(() => {
   border: 2px dashed white;
   width: 2rem;
   height: 2rem;
-  z-index: 10;
+  z-index: 1000;
+  //transition: background-color 1s, top 0.4s, right 0.4s;
   transition: 0.4s;
 }
 .target-filled {
@@ -135,37 +120,6 @@ onUnmounted(() => {
 //просто красивые цвета
 //hsla(160, 100%, 37%, 1);
 //hsla(160, 100%, 37%, 0.2);
-.header {
-  display: flex;
-  align-items: center;
-  height: 5rem;
-  background: linear-gradient(
-    90deg,
-    var(--emerald) 1.18%,
-    var(--light-emerald) 100%
-  );
-  color: white;
-  padding: 0.5rem 1.5rem 0.5rem 1.5rem;
-}
-
-.header--image {
-  height: 100%;
-  margin-right: 6px;
-}
-
-.header--title {
-  font-size: 1.5rem;
-  //margin-right: auto;
-}
-.controls {
-  margin-right: auto;
-  display: flex;
-  align-items: center;
-  .btn {
-    margin-left: 1rem;
-    height: 50%;
-  }
-}
 h1 {
   font-weight: 500;
   font-size: 2.6rem;
@@ -173,5 +127,34 @@ h1 {
 
 h3 {
   font-size: 1.2rem;
+}
+
+/*DO NOT TOUCH*/
+.router-anim-enter-active {
+  animation: coming 1s;
+  animation-delay: 1s;
+  opacity: 0;
+}
+@keyframes coming {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.router-anim-leave-active {
+  animation: going 1;
+}
+@keyframes going {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
 }
 </style>
