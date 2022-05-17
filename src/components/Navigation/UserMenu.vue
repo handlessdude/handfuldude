@@ -17,27 +17,27 @@ const MenuLinks = {
     icon: "fas fa-chart-bar",
   },
   "/page1": {
-    name: "Some Page 1",
+    name: "Page 1",
     icon: "fas fa-chart-bar",
   },
   "/page2": {
-    name: "Some Page 2",
+    name: "Page 2",
     icon: "fas fa-chart-bar",
   },
   "/page3": {
-    name: "Some Page 3",
+    name: "Page 3",
     icon: "fas fa-chart-bar",
   },
   "/page4": {
-    name: "Some Page 4",
+    name: "Page 4",
     icon: "fas fa-chart-bar",
   },
   "/page5": {
-    name: "Some Page 5",
+    name: "Page 5",
     icon: "fas fa-chart-bar",
   },
   "/page6": {
-    name: "Some Page 6",
+    name: "Page 6",
     icon: "fas fa-chart-bar",
   },
 };
@@ -49,7 +49,9 @@ const MenuLinks = {
       <transition name="menu-animation-inner">
         <div v-if="props.showMenu" class="menu-inner">
           <div class="toggle" @click.self="toggleMenu">
-            <i class="fa-solid fa-plus-large" />Menu
+            <h1 class="header--gesture">
+              <i class="fa-solid fa-circle-plus"></i>
+            </h1>
           </div>
           <MenuLink
             v-for="(value, key, index) in MenuLinks"
@@ -92,9 +94,9 @@ const MenuLinks = {
     height: var(--menu-size);
     border-radius: var(--menu-icon-border-radius);
     color: var(--dark-gray);
-    background: #fff;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    // background: #fff;
+    // box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    //   0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
     position: relative;
     z-index: 1000;
@@ -111,15 +113,32 @@ const MenuLinks = {
       box-shadow: 0 3px 4px rgba(0, 0, 0, 0.15);
       font-size: 2em;
       transition: 1.25s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      * {
+        margin: 0;
+      }
+
+      transition: 0.5s;
+      animation: myrotate 1s 1; /* Указываем название анимации, её время и количество повторов*/
+      animation-fill-mode: forwards; /* Чтобы элемент оставался в конечном состоянии анимации */
     }
   }
-
+  @keyframes myrotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(315deg);
+    }
+  }
   /*НЕ ТРОГАТЬ*/
   .link {
     position: absolute;
     left: 0;
     list-style: none;
-    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.15);
     .a-content {
       transform: rotate(calc(360deg / -8 * var(--i)));
     }
@@ -139,11 +158,6 @@ const MenuLinks = {
     }
     to {
       transform: rotate(calc(360deg / 8 * var(--i)));
-    }
-  }
-  .menu-inner.active {
-    .toggle {
-      transform: rotate(315deg);
     }
   }
 }

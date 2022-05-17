@@ -33,8 +33,6 @@ const isActive = computed(() => route.path === props.to);
   opacity: 0;
 }
 .link {
-  display: flex;
-  align-items: center;
   cursor: pointer;
   font-weight: 400;
   user-select: none;
@@ -44,7 +42,18 @@ const isActive = computed(() => route.path === props.to);
   text-decoration: none;
   width: var(--menu-icon-size);
   height: var(--menu-icon-size);
-  background-color: crimson;
+  background-color: var(--greeny);
+  //box-shadow: 0 7px 7px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.a-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .link:hover {
   background-color: var(--sidebar-item-hover);
