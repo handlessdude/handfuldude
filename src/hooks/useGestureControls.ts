@@ -137,7 +137,7 @@ export function useGestureControls(
         if (elem) {
           const e = gestureReducer(currentGesture.value);
           e && elem.dispatchEvent(e);
-          console.log(`firing action on element!`, e, elem.classList);
+          console.log(`firing action on element!`, e, elem);
         }
       }
     }

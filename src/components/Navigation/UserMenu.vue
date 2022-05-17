@@ -48,7 +48,7 @@ const MenuLinks = {
     <div v-if="props.showMenu" @click.self="props.toggleMenu" class="menu">
       <transition name="menu-animation-inner">
         <div v-if="props.showMenu" class="menu-inner">
-          <div class="toggle" @click.self="toggleMenu">
+          <div class="toggle" @click="toggleMenu">
             <h1 class="header--gesture">
               <i class="fa-solid fa-circle-plus"></i>
             </h1>
