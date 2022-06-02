@@ -54,6 +54,7 @@ const toggleMenu = () => (showMenu.value = !showMenu.value);
   justify-content: flex-start;
 }
 .header {
+  color: var(--gray);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -63,7 +64,6 @@ const toggleMenu = () => (showMenu.value = !showMenu.value);
     var(--emerald) 1.18%,
     var(--light-emerald) 100%
   );
-  color: white;
   padding: 0.5rem 1.5rem 0.5rem 1.5rem;
   width: 100%;
 }
@@ -88,7 +88,6 @@ const toggleMenu = () => (showMenu.value = !showMenu.value);
 }
 
 .tab {
-  color: #000;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -96,8 +95,9 @@ const toggleMenu = () => (showMenu.value = !showMenu.value);
   top: var(--header-height);
   width: var(--menu-btn-width);
   height: var(--menu-btn-height);
-  background-color: #fff;
-  color: var(--dark-gray);
+
+  background-color: var(--gray);
+  color: var(--darkest-gray);
   z-index: 999;
   /* Only round the top corners */
   -webkit-border-bottom-left-radius: 15px;
@@ -125,13 +125,13 @@ const toggleMenu = () => (showMenu.value = !showMenu.value);
   left: -20px;
   border-top-right-radius: 15px;
   border-width: 0 1px 1px 0;
-  box-shadow: 5px -5px 0 #fff;
+  box-shadow: 5px -5px 0 var(--gray);
 }
 .tab:after {
   right: -20px;
   border-top-left-radius: 15px;
   border-width: 0 0 1px 1px;
-  box-shadow: -5px -5px 0 #fff;
+  box-shadow: -5px -5px 0 var(--gray);
 }
 
 .slide-enter-active,

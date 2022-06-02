@@ -38,7 +38,7 @@ const isActive = computed(() => route.path === props.to);
   user-select: none;
   padding: 0.4em;
   border-radius: var(--menu-icon-border-radius);
-  color: white;
+  color: var(--gray);
   text-decoration: none;
   width: var(--menu-icon-size);
   height: var(--menu-icon-size);

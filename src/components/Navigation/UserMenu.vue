@@ -84,7 +84,7 @@ const MenuLinks = {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.089);
+  background-color: rgba(33, 33, 33, 0.561);
   .menu-inner {
     display: flex;
     flex-direction: column;
@@ -106,7 +106,7 @@ const MenuLinks = {
       width: var(--menu-icon-size);
       height: var(--menu-icon-size);
       border-radius: var(--menu-icon-border-radius);
-      background-color: white;
+      background-color: var(--gray);
 
       z-index: 1000;
       cursor: pointer;
