@@ -66,6 +66,10 @@ const toggleMenu = () => (showMenu.value = !showMenu.value);
   );
   padding: 0.5rem 1.5rem 0.5rem 1.5rem;
   width: 100%;
+  .btn {
+    background-color: var(--gray);
+    color: var(--darkest-gray);
+  }
 }
 
 .header--image {
