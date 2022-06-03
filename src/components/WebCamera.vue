@@ -26,10 +26,13 @@ const constraints = {
 const toggleCam = () => {
   if (!isEnabled.value) {
     isEnabled.value = true;
-    navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-      (video.value as HTMLVideoElement).srcObject = stream;
-      console.log("DBG: Webcam stream is captured!");
-    });
+    navigator.mediaDevices.getUserMedia(constraints).then(
+      (stream) => {
+        (video.value as HTMLVideoElement).srcObject = stream;
+        console.log("DBG: Webcam stream is captured!");
+      },
+      (err) => alert("Make sure your camera is accessible for the app.")
+    );
   } else {
     console.log("Cam is already enabled.");
   }
